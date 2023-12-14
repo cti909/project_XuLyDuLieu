@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+</head>
+<body>
+    <div class="container">
+        <section class="get-in-touch">
+            <h1 class="title">multi-label classification</h1>
+            <form class="contact-form row" id="post-form">
+                {% csrf_token %}
+               <div class="form-field col-lg-12">
+                   <input id="title" class="input-text js-input" type="text" name="title" required>
+                   <label class="label" for="message" >TITLE</label>
+               </div>
+               <div class="form-field col-lg-12">
+                   <label class="" for="message" 
+                   style="left: 20px;
+                   bottom: 25px;
+                   font-size: 18px;
+                   line-height: 26px;
+                   font-weight: 400;
+                   color: #5543ca;
+                   " >ABSTRACT</label>
+                   <textarea id="abstract" class="input-text js-input" name="abstract" rows="10" style="height: 100px;" required></textarea>
+             </div>
+               <div class="form-field col-lg-12">
+                  <button class="submit-btn" type="submit" id="btnpredict">Submit </button>
+               </div>
+            </form>
+            <label id="text" name="text" 
+            style="
+            position:absolute;
+            left:130px;
+            font-size: 40px;
+            line-height: 26px;
+            font-weight: 400;
+            color: #5543ca;
+            align-items: center;
+            "> </label>
+        </section>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#post-form').submit(function (event) {
+                event.preventDefault(); 
+
+                var title = $('#title').val();
+                var abstract = $('#abstract').val();
+                var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+                if (title === "" || abstract === "") return;
+
+                var loadingText = ".....";
+                var index = 0;
+                var interval = setInterval(function() {
+                  $('#text').text(loadingText.substring(0, index));
+                  index++;
+                  if (index > loadingText.length) {
+                      clearInterval(interval);
+                  }
+                }, 75);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "predict" %}', 
+                    data: {
+                        'abstract': abstract,
+                        'title':title,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function (response) {
+                        // Khi nhận được phản hồi từ máy chủ
+                        clearInterval(interval);
+                        $('#text').text('Category predict: ' + response.result);
+                    },
+                    error: function (xhr, errmsg, err) {
+                        // Xử lý lỗi nếu có
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div>
+            <h1>Category</h1>
+            <p>{{post.label}}</p>
+        </div>
+        <div>
+            <h1>Title</h1>
+            <p>{{post.title}}</p>
+        </div>
+        <div>
+            <h1>Abstract</h1>
+            <p>{{post.abstract}}</p>
+        </div>
+    </div>
+    
+
+{% endblock content %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock footer %}
+
+{% load static %}

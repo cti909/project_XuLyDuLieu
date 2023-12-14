@@ -1,0 +1,109 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="py-2" style="background-color: #d5d5d5;">
+    <div class="container">
+        <div class="d-flex justify-content-end">
+            <a href="{% url 'add-post' %}">
+                <button type="button" class="btn btn-primary">New post</button>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="py-3">
+  <div class="container">
+    <div class="row">
+        <div class="col-8">
+            <div class="d-flex">
+                <h5 class="d-flex align-items-center text-center me-3">Category:</h2>
+                <select class="w-25 form-select" id="category" onChange="handleChangeSelectCategory()">
+                    {% for category in categories %}
+                        {% if category.name == category_name %}
+                        <option value="{{category.name}}" selected>{{category.name}}</option>
+                        {% else %}
+                        <option value="{{category.name}}">{{category.name}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="d-flex">
+                <form class="input-group mb-3" id="search_form">
+                    {% if search_name %}
+                        <input name="search_name" type="search" class="form-control" placeholder="Search" value="{{search_name}}"/>
+                    {% else %}
+                        <input name="search_name" type="search" class="form-control" placeholder="Search"/>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="container">
+    <h1 class="text-center py-3">List posts</h1>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="show_product">
+        {% if posts %}
+        {% for post in posts %}
+        <div class="col">
+            <div class="card shadow-sm">
+                <img class="img-thumbnail view_img" src="{% static 'img/blog.jpg' %}" alt="">   
+                <div class="card-body">
+                    <h5 class="card-text text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{post.title}}</h5>
+                    {% comment %} <h5 class="card-text text-center">Total product: {{product.number}}</h5>
+                    <h5 class="card-text text-center">Price: {{product.price}}$</h5>
+                    <h5 class="card-text text-center">Producer: {{product.producer}}</h5>
+                    <div class="d-flex justify-content-end align-items-center">
+                        <div class="btn-group">
+                            <a href="{% url 'product_detail' id=product.id%} ">
+                                <button class="btn btn-sm btn-outline-secondary mx-1">View detail</button>
+                            </a>
+                        </div>
+                    </div> {% endcomment %}
+                    <div class="d-flex justify-content-end">                     
+                      <a href="{% url 'post_detail' id=post.id %}">
+                        <button type="button" class="btn btn-outline-dark ">View detail</button>
+                      </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center w-100">No entry!</p>
+        {% endif %}
+        
+    </div>
+  </div>
+  {% comment %} <div class="container ">
+      <ul class="d-flex justify-content-center p-3" id="pagination">
+      </ul>
+  </div> {% endcomment %}
+  </div>
+  <div id="showform"></div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock footer %}
+
+{% block js_link %}
+<script>
+    function handleChangeSelectCategory() {
+        let selectedValue = document.getElementById("category").value;
+        window.location.href = 'http://127.0.0.1:8000/post?category_name='+selectedValue+'&search_name={{search_name}}';
+    }
+    
+    document.getElementById('search_form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        let search_name = event.target.search_name.value
+        window.location.href = 'http://127.0.0.1:8000/post?category_name={{category_name}}&search_name='+search_name;
+    });
+</script>
+{% endblock js_link %}

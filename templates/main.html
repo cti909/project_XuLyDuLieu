@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'bootstrap5/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome6/css/all.min.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/reset.css' %}"> {% endcomment %}
+    {% block head_link %}{% endblock head_link %}
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    {% block content %}{% endblock content%}
+    {% comment %} {% include 'footer.html' %} {% endcomment %}
+    
+    {% block footer %}{% endblock footer %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'bootstrap5/js/bootstrap.min.js' %}"></script>
+    {% comment %} <script src="{% static 'fontawesome6/css/all.min.js' %}"></script> {% endcomment %}
+    {% block js_link %}{% endblock js_link %}
+    
+</body>
+</html>

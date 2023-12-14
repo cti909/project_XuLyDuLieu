@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block head_link %}
+<link rel="stylesheet" href="{% static 'css/login_form.css' %}">
+{% endblock head_link %}
+
+{% block content %}
+<div class='bg-image' style="background-image : url('{% static 'img/background-home.jpg' %}'); height: 100vh; object-fit: cover;">
+  <div class="container vh-100 d-flex align-items-center justify-content-center">
+      <h1 class="text-white" style="font-size: 64px">Welcome to post</h1>
+  </div>
+</div>
+{% endblock content %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock footer %}
+
+{% load static %}

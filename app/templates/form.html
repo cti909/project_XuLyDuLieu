@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="contact-clean">
+            <form id="post-form" class="form-outline" style="margin-top: 50px;">
+                {% csrf_token %}
+                <h2 class="text-center">Program category predict</h2>
+                <div class="form-group"><textarea class="form-control" rows="2" name="title" placeholder="Enter your title"></textarea></div>
+                <div class="form-group"><textarea class="form-control" rows="5" name="abstract" placeholder="Enter your abstract"></textarea></div>
+                <div class="form-group"><button class="btn btn-primary" type="submit">send </button></div>
+            </form>
+            <span id="text" name="text"></span>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#post-form').submit(function (event) {
+                event.preventDefault(); 
+
+                var title = $('#title').val();
+                var abstract = $('#abstract').val();
+                var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+                if (title === "" || abstract === "") return;
+
+                var loadingText = ".....";
+                var index = 0;
+                var interval = setInterval(function() {
+                  $('#text').text(loadingText.substring(0, index));
+                  index++;
+                  if (index > loadingText.length) {
+                      clearInterval(interval);
+                  }
+                }, 100);
+
+                var text = "";
+                clearText = setInterval(() => {
+                  $('#text').text(text);
+                },2000);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "predict" %}', 
+                    data: {
+                        'abstract': abstract,
+                        'title':title,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function (response) {
+                        // Khi nhận được phản hồi từ máy chủ
+                        clearInterval(interval);
+                        $('#text').text('Category predict: ' + response.result);
+                    },
+                    error: function (xhr, errmsg, err) {
+                        // Xử lý lỗi nếu có
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+          }
+      
+          body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #222;
+            background-image: url('/static/img/background_register.jpg');
+          }
+      
+          .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+          }
+      
+          .form-container {
+            width: 600px;
+            margin: 0 auto;
+            padding: 50px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            opacity: 0.8;
+          }
+      
+          h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+            color: #b38bff;
+          }
+      
+          form {
+            display: flex;
+            flex-direction: column;
+          }
+      
+          label {
+            margin-bottom: 10px;
+            font-size: 18px;
+          }
+      
+          input {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #555;
+          }
+      
+          button {
+            padding: 10px;
+            background-color: #b38bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.2s ease-in-out;
+          }
+      
+          button:hover {
+            background-color: #8c5fb2;
+          }
+      
+          a {
+            text-decoration: none;
+            color: #b38bff;
+            font-size: 18px;
+            transition: color 0.2s ease-in-out;
+          }
+      
+          a:hover {
+            color: #8c5fb2;
+          }
+      
+          p {
+            text-align: center;
+            margin: 8px;
+          }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container" id="signup-form>">
+          <h1>Sign Up</h1>
+          <form action="{% url 'handle_signup' %}" method="post">
+            {% csrf_token %}
+            <label for="new-username">Username</label>
+            <input type="text" id="new-username" name="new-username" required>
+            <label for="new-username">FirstName</label>
+            <input type="text" id="new-firstname" name="new-firstname" required>
+            <label for="new-username">LastName</label>
+            <input type="text" id="new-lastname" name="new-lastname" required>
+            <label for="new-username">Address</label>
+            <input type="text" id="new-lastname" name="new-address" required>
+            <label for="new-email">Email</label>
+            <input type="email" id="new-email" name="new-email" required>
+            <label for="new-password">Password</label>
+            <input type="password" id="new-password" name="new-password" required>
+            <div class="d-flex justify-content-between mt-2">
+                <a class="text-white-50" href="/">Forgot password?</a>
+                <a class="text-white-50" href="{% url 'home' %}" style="float: right;">Back to home</a>
+            </div>            
+            <button type="submit">Sign Up</button>
+          </form>
+          {% if message %}
+          <p> {{message}} </p>
+          {% endif %}
+          {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
+
+          <p>Already have an account? <a href="{% url 'login' %}" id="login-link">Login</a></p>
+        </div>
+      </div>
+</body>
+</html>
