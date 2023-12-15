@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-import tensorflow as tf
-from transformers import BertTokenizer, TFBertForSequenceClassification
-import string as s
-from nltk.corpus import stopwords
-import nltk
-import pandas as pd
+# import tensorflow as tf
+# from transformers import BertTokenizer, TFBertForSequenceClassification
+# import string as s
+# from nltk.corpus import stopwords
+# import nltk
+# import pandas as pd
 from django.contrib.auth import authenticate
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -17,13 +17,13 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 
-lemmatizer = nltk.stem.WordNetLemmatizer()
+# lemmatizer = nltk.stem.WordNetLemmatizer()
 
-model_name = "bert-base-uncased"
-tokenizer = BertTokenizer.from_pretrained(model_name)
-model = TFBertForSequenceClassification.from_pretrained(model_name, num_labels=6)
-# Load your trained model
-model.load_weights('tf_model.h5')
+# model_name = "bert-base-uncased"
+# tokenizer = BertTokenizer.from_pretrained(model_name)
+# model = TFBertForSequenceClassification.from_pretrained(model_name, num_labels=6)
+# # Load your trained model
+# model.load_weights('tf_model.h5')
 
 
 def index(request):
@@ -125,7 +125,7 @@ def handle_view_add_post(request):
     if request.user.is_authenticated:
         return render(request, 'form-add-post.html')   
     else:
-       return redirect('handle_login')
+       return redirect('login')
 
 def post_detail(request, id):
     post = Post.objects.get(id=id)
@@ -146,10 +146,20 @@ def predict_new_post(request):
     }
     response = requests.post(target_url, json=data)
     json_data = response.json()
-    context = {"predict_code": json_data['data']['predict_code'],"predict_category": json_data['data']['predict_message']}
-    context = json.dumps(context)
-    return HttpResponse(context, content_type='application/json', status=200)
-
+    context = {
+        "predict_code": json_data['data']['predict_code'],
+        "predict_category": json_data['data']['predict_message']
+    }
+    category_post = Category.objects.get(name=json_data['data']['predict_message'])
+    new_post = Post.objects.create(
+            title = title,
+            abstract = abstract,
+            user = request.user,
+            label = category_post
+    )
+    new_post.save()
+    json_cmt = json.dumps(context)
+    return JsonResponse(data=json_cmt, safe=False, status= 200)
 # def handle_post(request):
 #     if request.method == 'POST':
 #         # Lấy dữ liệu từ yêu cầu POST
@@ -242,59 +252,59 @@ def predict_new_post(request):
 
 #         return JsonResponse({'result': label_category[index]})
 
-def tokenization(text):
-    lst = text.split()
-    return lst
+# def tokenization(text):
+#     lst = text.split()
+#     return lst
 
-def lowercasing(lst):
-    new_lst = []
-    for i in lst:
-        i = i.lower()
-        new_lst.append(i)
-    return new_lst
+# def lowercasing(lst):
+#     new_lst = []
+#     for i in lst:
+#         i = i.lower()
+#         new_lst.append(i)
+#     return new_lst
 
-def remove_punctuations(lst):
-    new_lst = []
-    for i in lst:
-        for j in s.punctuation:
-            i = i.replace(j, '')
-        new_lst.append(i)
-    return new_lst
+# def remove_punctuations(lst):
+#     new_lst = []
+#     for i in lst:
+#         for j in s.punctuation:
+#             i = i.replace(j, '')
+#         new_lst.append(i)
+#     return new_lst
 
-def remove_numbers(lst):
-    nodig_lst = []
-    new_lst = []
+# def remove_numbers(lst):
+#     nodig_lst = []
+#     new_lst = []
 
-    for i in lst:
-        for j in s.digits:
-            i = i.replace(j, '')
-        nodig_lst.append(i)
-    for i in nodig_lst:
-        if i != '':
-            new_lst.append(i)
-    return new_lst
+#     for i in lst:
+#         for j in s.digits:
+#             i = i.replace(j, '')
+#         nodig_lst.append(i)
+#     for i in nodig_lst:
+#         if i != '':
+#             new_lst.append(i)
+#     return new_lst
 
-def remove_stopwords(lst):
-    stop = stopwords.words('english')
-    new_lst = []
-    for i in lst:
-        if i not in stop:
-            new_lst.append(i)
-    return new_lst
+# def remove_stopwords(lst):
+#     stop = stopwords.words('english')
+#     new_lst = []
+#     for i in lst:
+#         if i not in stop:
+#             new_lst.append(i)
+#     return new_lst
 
-def lemmatzation(lst):
-    new_lst = []
-    for i in lst:
-        i = lemmatizer.lemmatize(i)
-        new_lst.append(i)
-    return new_lst
+# def lemmatzation(lst):
+#     new_lst = []
+#     for i in lst:
+#         i = lemmatizer.lemmatize(i)
+#         new_lst.append(i)
+#     return new_lst
 
-def data_preprocessing(lst):
-    lst = tokenization(lst)
-    lst = lowercasing(lst)
-    lst = remove_punctuations(lst)
-    lst = remove_numbers(lst)
-    lst = remove_stopwords(lst)
-    lst = lemmatzation(lst)
-    lst = ''.join(i + ' ' for i in lst)
-    return lst
+# def data_preprocessing(lst):
+#     lst = tokenization(lst)
+#     lst = lowercasing(lst)
+#     lst = remove_punctuations(lst)
+#     lst = remove_numbers(lst)
+#     lst = remove_stopwords(lst)
+#     lst = lemmatzation(lst)
+#     lst = ''.join(i + ' ' for i in lst)
+#     return lst

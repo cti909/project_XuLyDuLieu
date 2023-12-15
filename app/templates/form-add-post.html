@@ -57,15 +57,16 @@
             type: 'POST',
             url: '{% url "predict" %}', 
             data: payload,
-            dataType : "application/json",
+            dataType : "json",
         }).done(function(response){
+            let jsonResponse = JSON.parse(response);
             console.log(response)
-            $('#text').text('Category predict: ' + response.predict_category);
-            alert("Predict category: "+response.predict_category)
+            $('#text').text('Category predict: ' + jsonResponse.predict_category);
+            alert("Predict category: "+jsonResponse.predict_category)
         }).fail(function(response){
           {% comment %} code thực hiện {% endcomment %}
           console.log(response.responseText)
-          $('#text').text('Category predict: ' + response.responseText.predict_code);
+          $('#text').text('Category predict: ' + response.responseText.predict_category);
           alert("Predict category: "+response.responseText.predict_category)
       });;
       });
